@@ -13,7 +13,7 @@ mvn exec:java -Dexec.args="--help"
 
 To run the Task, use the main class, RunnerApp. It requires the following arguments:
 
-* runner.task.class - The full class name of the task to be run. Eg. com.eharmony.matching.runner.task.mrs.MrsMatchCountTask
+* runner.task.class - The full class name of the task to be run. Eg. com.eharmony.runner.task.sample.WordCountTask
 * runner.parser.class - The full class to be used to parse each line in the input file. Eg. com.eharmony.matching.runner.input.IntegerLineParser
 * runner.input.file - The full path to the input file used by the task.
 * runner.task.threads - The number of threads to run the task
