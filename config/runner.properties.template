@@ -1,0 +1,8 @@
+runner.task.class=com.eharmony.runner.task.sample.WordCountTask
+runner.parser.class=com.eharmony.runner.input.StringLineParser
+runner.input.file=sample/sample-words.txt
+#runner.task.class=com.eharmony.runner.task.sample.NumberAggregatorTask
+#runner.parser.class=com.eharmony.runner.input.IntegerLineParser
+#runner.input.file=sample/sample-numbers.txt
+runner.task.threads=5
+runner.task.batch.size=5
