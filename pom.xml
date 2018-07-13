@@ -2,13 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.eharmony</groupId>
   <artifactId>parallel-task-runner</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Parallel Task Runner</name>
-  <properties/>
+  <properties />
   <scm>
     <connection>scm:git:git@github.com:eharmony/parallel-task-runner.git</connection>
     <url>git@github.com:eharmony/parallel-task-runner.git</url>
     <developerConnection>scm:git:git@github.com:eharmony/parallel-task-runner.git</developerConnection>
+    <tag>parallel-task-runner-1.0.0</tag>
   </scm>
   <dependencies>
     <dependency>
@@ -72,7 +73,7 @@
             </goals>
             <configuration>
               <rules>
-                <requireUpperBoundDeps/>
+                <requireUpperBoundDeps />
               </rules>
             </configuration>
           </execution>
@@ -84,7 +85,7 @@
             <configuration>
               <rules>
                 <banDuplicateClasses>
-                  <ignoreClasses/>
+                  <ignoreClasses />
                   <findAllDuplicates>true</findAllDuplicates>
                 </banDuplicateClasses>
               </rules>
