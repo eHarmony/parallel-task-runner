@@ -18,6 +18,8 @@ To run the Task, use the main class, RunnerApp. It requires the following argume
 * runner.input.file - The full path to the input file used by the task.
 * runner.task.threads - The number of threads to run the task
 * runner.task.batch.size - The number of entries to be passed into each task
+* runner.input.skip.size - Optional. Number of initial records to skip.
+* runner.input.process.size - Optional. Number of records to process from input file.
 
 To set these properties, you can use one of two things:
 

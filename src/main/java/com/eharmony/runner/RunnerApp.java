@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
@@ -46,6 +47,8 @@ public class RunnerApp {
     private static final String RUNNER_INPUT_FILE = "runner.input.file";
     private static final String RUNNER_TASK_THREADS = "runner.task.threads";
     private static final String RUNNER_TASK_BATCH_SIZE = "runner.task.batch.size";
+    private static final String RUNNER_INPUT_SKIP_SIZE = "runner.input.skip.size";
+    private static final String RUNNER_INPUT_PROCESS_SIZE = "runner.input.process.size";
     private static final String DEFAULT_CONFIG_PATH = "config/runner.properties";
     private static final Set<String> REQUIRED_PROPERTIES =
             Sets.newHashSet(RUNNER_INPUT_FILE,
@@ -92,10 +95,16 @@ public class RunnerApp {
             TaskRunner runner;
             final int numThreads = Integer.parseInt(runnerProperties.getProperty(RUNNER_TASK_THREADS));
             final int batchSize = Integer.parseInt(runnerProperties.getProperty(RUNNER_TASK_BATCH_SIZE));
+
+            int skipSize = Integer.parseInt(runnerProperties.getProperty(RUNNER_INPUT_SKIP_SIZE,"0"));
+            int inputProcessSize = Integer.parseInt(
+                    runnerProperties.getProperty(RUNNER_INPUT_PROCESS_SIZE,Integer.toString(Integer.MAX_VALUE)));
+
             if (options.outputCsv) {
-                runner = new TaskRunner(numThreads, batchSize, new CsvStatisticsOutputWriter());
+                runner = new TaskRunner(numThreads, batchSize, Optional.of(new CsvStatisticsOutputWriter()),
+                        skipSize,inputProcessSize);
             } else {
-                runner = new TaskRunner(numThreads, batchSize);
+                runner = new TaskRunner(numThreads, batchSize,Optional.empty(),skipSize,inputProcessSize);
             }
 
             Set<String> allProperties = new HashSet<>(REQUIRED_PROPERTIES);
@@ -155,8 +164,8 @@ public class RunnerApp {
         boolean outputCsv;
 
         RunnerOptions(final boolean promptUser,
-                             final String configPath,
-                             final boolean outputCsv) {
+                      final String configPath,
+                      final boolean outputCsv) {
             this.promptUser = promptUser;
             this.configPath = configPath;
             this.outputCsv = outputCsv;
