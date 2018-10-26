@@ -25,12 +25,23 @@ public class LineReader<I> implements AutoCloseable {
     private BufferedReader reader;
     private LineParser<I> lineParser;
 
+
     public LineReader(File inputFile, LineParser<I> lineParser) throws FileNotFoundException {
         if (inputFile == null) {
             throw new FileNotFoundException("No input file specified");
         }
 
         this.reader = new BufferedReader(new FileReader(inputFile));
+        this.lineParser = lineParser;
+    }
+
+    public LineReader(File inputFile, LineParser<I> lineParser,int skipSize) throws Exception {
+        if (inputFile == null) {
+            throw new FileNotFoundException("No input file specified");
+        }
+
+        this.reader = new BufferedReader(new FileReader(inputFile));
+        skipRecords(skipSize);
         this.lineParser = lineParser;
     }
 
@@ -46,6 +57,14 @@ public class LineReader<I> implements AutoCloseable {
     public void close() throws Exception {
         if (reader != null) {
             reader.close();
+        }
+    }
+
+    private void skipRecords(int skipSize) throws Exception{
+        for(int i=0;i<skipSize;i++){
+            if(reader.readLine() == null){
+                break;
+            }
         }
     }
 }

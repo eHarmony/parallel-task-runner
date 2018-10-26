@@ -44,23 +44,30 @@ public class TaskRunner<I, C extends RunnerContext> {
     private final LogStatisticsOutputWriter logOutputWriter;
     private Optional<StatisticsOutputWriter> alternateOutputWriter;
     private int batchCount;
+    private int skipSize;
+    private int inputSize;
+    private int currInputSize = 0;
 
     public TaskRunner(final int numThreads, final int batchSize) {
-        this(numThreads, batchSize, Optional.empty());
+        this(numThreads, batchSize, Optional.empty(),0,Integer.MAX_VALUE);
     }
 
     public TaskRunner(final int numThreads, final int batchSize,
-                       final StatisticsOutputWriter alternateOutputWriter) {
-        this(numThreads, batchSize, Optional.of(alternateOutputWriter));
+                      final StatisticsOutputWriter alternateOutputWriter) {
+        this(numThreads, batchSize, Optional.of(alternateOutputWriter),0,
+                Integer.MAX_VALUE);
     }
 
-    private TaskRunner(final int numThreads, final int batchSize,
-                      final Optional<StatisticsOutputWriter> alternateOutputWriter) {
+    public TaskRunner(final int numThreads, final int batchSize,
+                      final Optional<StatisticsOutputWriter> alternateOutputWriter,
+                      final int skipRecords,final int inputSize) {
         this.batchSize = batchSize;
         this.numThreads = numThreads;
         this.alternateOutputWriter = alternateOutputWriter;
         this.logOutputWriter = new LogStatisticsOutputWriter();
         this.completionService = new ExecutorCompletionService<>(Executors.newFixedThreadPool(numThreads));
+        this.skipSize = skipRecords;
+        this.inputSize = inputSize;
     }
 
     public void executeTask(final File inputFile,
@@ -69,7 +76,7 @@ public class TaskRunner<I, C extends RunnerContext> {
                             final C runnerContext) {
         batchCount = 0;
         final long startTime = System.currentTimeMillis();
-        try (LineReader<I> reader = new LineReader<>(inputFile, parser)){
+        try (LineReader<I> reader = new LineReader<>(inputFile, parser,this.skipSize)){
             List<I> inputCollection = getInputBatch(reader);
 
             int activeThreads = 0;
@@ -133,7 +140,8 @@ public class TaskRunner<I, C extends RunnerContext> {
 
         I inputLine;
 
-        while (inputCollection.size() < batchSize && (inputLine = reader.parseNextInputLine()) != null) {
+        while (inputCollection.size() < batchSize && inputSize > currInputSize++
+                && (inputLine = reader.parseNextInputLine()) != null) {
             inputCollection.add(inputLine);
         }
 
